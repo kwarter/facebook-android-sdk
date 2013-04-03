@@ -10,6 +10,7 @@ gen/
 out/
 facebook/doc/
 facebook/lint.xml
+facebook/target/
 facebook/tests/lint.xml
 facebook/tests/assets/config.json
 .idea/workspace.xml

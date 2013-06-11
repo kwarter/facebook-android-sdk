@@ -9,6 +9,7 @@ local.properties
 bin/
 gen/
 out/
+build/
 facebook/doc/
 facebook/lint.xml
 facebook/target/

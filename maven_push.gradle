@@ -1,0 +1,69 @@
+apply plugin: 'maven'
+apply plugin: 'signing'
+
+def kwarterMavenRepo
+if (isReleaseBuild()) {
+    println 'RELEASE BUILD'
+    kwarterMavenRepo = mavenRepoRelease
+} else {
+    println 'DEBUG BUILD'
+    kwarterMavenRepo = mavenRepoSnapshot
+}
+
+// figure out why this is in afterEvaluate
+afterEvaluate { project ->
+    uploadArchives {
+        repositories {
+            mavenDeployer {
+//                figure out how to sign stuff
+//                beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
+                pom.artifactId = POM_ARTIFACT_ID
+
+                repository(url: kwarterMavenRepo) {
+                    authentication(userName: mavenUsername, password: mavenPassword)
+                }
+
+                pom.project {
+                    name POM_NAME
+                    packaging POM_PACKAGING
+                    description POM_DESCRIPTION
+                    url "http://kwarter.com"
+
+                    developers {
+                        developer {
+                            id POM_DEVELOPER_ID
+                            name POM_DEVELOPER_NAME
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    signing {
+        required { isReleaseBuild() && gradle.taskGraph.hasTask("uploadArchives") }
+        sign configurations.archives
+    }
+
+    task androidJavadocs(type: Javadoc) {
+        source = android.sourceSets.main.allJava
+    }
+
+    task androidJavadocsJar(type: Jar) {
+        classifier = 'javadoc'
+        from androidJavadocs.destinationDir
+    }
+
+    task androidSourcesJar(type: Jar) {
+        classifier = 'sources'
+        from android.sourceSets.main.allSource
+    }
+
+    if (!isReleaseBuild()) {
+        artifacts {
+            archives androidSourcesJar
+            archives androidJavadocsJar
+        }
+    }
+}

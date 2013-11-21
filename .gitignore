@@ -24,3 +24,6 @@ facebook/tests/assets/config.json
 #eclipse
 .project
 .classpath
+
+#gradle
+.gradle

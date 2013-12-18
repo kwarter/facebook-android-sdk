@@ -1,28 +1,9 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
-
-task wrapper(type: Wrapper) {
-    gradleVersion = '1.8'
-}
-
-def isReleaseBuild() {
-    return version.contains("SNAPSHOT") == false
-}
-
-allprojects {
-    version = VERSION_NAME
-    group = GROUP
-
+buildscript {
     repositories {
         mavenCentral()
-        maven {
-            url 'https://raw.github.com/kwarter/Kwarter-Mobile/master/Android/libraries/'
-        }
-        maven {
-            url mavenRepoSnapshot
-        }
-        maven {
-            url mavenRepoRelease
-        }
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:0.6.+'
     }
 }
-
